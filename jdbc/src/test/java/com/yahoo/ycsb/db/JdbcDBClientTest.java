@@ -9,6 +9,7 @@ import org.junit.*;
 
 import java.sql.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 
 /**
@@ -132,7 +133,7 @@ public class JdbcDBClientTest {
     public void insertTest() {
         try {
             String insertKey = "user0";
-            HashMap insertMap = insertRow(insertKey);
+            HashMap<String, ByteIterator> insertMap = insertRow(insertKey);
 
             ResultSet resultSet = jdbcConnection.prepareStatement(
                 String.format("SELECT * FROM %s", TABLE_NAME)
@@ -157,7 +158,6 @@ public class JdbcDBClientTest {
         }
     }
 
-    /* TODO: Currently updateTest will fail because YCSB core starts at field0, jdbc-binding starts at field1
     @Test
     public void updateTest() {
         try {
@@ -224,11 +224,36 @@ public class JdbcDBClientTest {
 
         assertTrue(true);
     }
-    */
 
     @Test
     public void readTest() {
-        assertTrue(true);
+        String insertKey = "user0";
+        HashMap<String, ByteIterator> insertMap = insertRow(insertKey);
+        HashSet<String> readFields = new HashSet<String>();
+        HashMap<String, ByteIterator> readResultMap = new HashMap<String, ByteIterator>();
+
+        // Test reading a single
+        readFields.add("FIELD0");
+        jdbcDBClient.read(TABLE_NAME, insertKey, readFields, readResultMap);
+        assertEquals("Assert that result has correct number of fields", readFields.size(), readResultMap.size());
+        for (String field: readFields) {
+            // TODO: This will fail until the fix is made to insert and update fields in the correct order.
+            // TODO: Uncomment this assertEquals when the fix is made.
+            //assertEquals("Assert " + field + " was read correctly", insertMap.get(field), readResultMap.get(field));
+        }
+
+        readResultMap = new HashMap<String, ByteIterator>();
+
+        // Test reading all fields
+        readFields.add("FIELD1");
+        readFields.add("FIELD2");
+        jdbcDBClient.read(TABLE_NAME, insertKey, readFields, readResultMap);
+        assertEquals("Assert that result has correct number of fields", readFields.size(), readResultMap.size());
+        for (String field: readFields) {
+            // TODO: This will fail until the fix is made to insert and update fields in the correct order.
+            // TODO: Uncomment this assertEquals when the fix is made.
+            //assertEquals("Assert " + field + " was read correctly", insertMap.get(field), readResultMap.get(field));
+        }
     }
 
     @Test
