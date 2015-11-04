@@ -25,6 +25,7 @@ jdk:
 
 before_install:
   - mysql -e "create database IF NOT EXISTS ycsb;" -uroot
+  - psql -c 'create database ycsb;' -U postgres
   
 install: mvn install -q -DskipTests=true
 
@@ -34,6 +35,7 @@ script: mvn test -q
 services:
   - mongodb
   - mysql
+  - postgres
 
 # Use the Container based infrastructure.
 sudo: false
