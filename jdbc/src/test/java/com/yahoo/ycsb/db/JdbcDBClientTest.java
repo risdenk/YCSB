@@ -58,9 +58,15 @@ public class JdbcDBClientTest {
             if (jdbcConnection != null) {
                 jdbcConnection.close();
             }
+            if (jdbcDBClient != null) {
+                jdbcDBClient.cleanup();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            fail("Could not drop local Database");
+            fail("Could not close local Database connection");
+        } catch (DBException e) {
+            e.printStackTrace();
+            fail("Could not cleanup client connection");
         }
     }
 
