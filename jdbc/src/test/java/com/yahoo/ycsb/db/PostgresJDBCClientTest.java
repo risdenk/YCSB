@@ -24,7 +24,7 @@ import static org.junit.Assume.assumeNoException;
  * Created by risdenk on 11/4/15.
  */
 public class PostgresJDBCClientTest extends JdbcDBClientTest {
-    private static final String TEST_DB_URL = "jdbc:postgres://127.0.0.1:5432/ycsb";
+    private static final String TEST_DB_URL = "jdbc:postgresql://127.0.0.1:5432/ycsb";
     private static final String TEST_DB_USER = "postgres";
     private static final String TEST_DB_PASSWORD = "";
     private static final int POSTGRES_DEFAULT_PORT = 5432;
