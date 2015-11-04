@@ -283,11 +283,11 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     StringBuilder update = new StringBuilder("UPDATE ");
     update.append(updateType.tableName);
     update.append(" SET ");
-    for (int i = 1; i <= updateType.numFields; i++) {
+    for (int i = 0; i < updateType.numFields; i++) {
       update.append(COLUMN_PREFIX);
       update.append(i);
       update.append("=?");
-      if (i < updateType.numFields) update.append(", ");
+      if (i < updateType.numFields - 1) update.append(", ");
     }
     update.append(" WHERE ");
     update.append(PRIMARY_KEY);
@@ -304,8 +304,10 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     select.append(scanType.tableName);
     select.append(" WHERE ");
     select.append(PRIMARY_KEY);
-    select.append(" >= ");
-    select.append("?");
+    select.append(" >= ?");
+    select.append(" ORDER BY ");
+    select.append(PRIMARY_KEY);
+    select.append(" LIMIT ?;");
     PreparedStatement scanStatement = getShardConnectionByKey(key).prepareStatement(select.toString());
     if (this.jdbcFetchSize != null) scanStatement.setFetchSize(this.jdbcFetchSize);
     PreparedStatement stmt = cachedStatements.putIfAbsent(scanType, scanStatement);
@@ -364,6 +366,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
         scanStatement = createAndCacheScanStatement(type, startKey);
       }
       scanStatement.setString(1, startKey);
+      scanStatement.setInt(2, recordcount);
       ResultSet resultSet = scanStatement.executeQuery();
       for (int i = 0; i < recordcount && resultSet.next(); i++) {
         if (result != null && fields != null) {
