@@ -63,8 +63,6 @@ public class JdbcDBClientTest {
         try {
             jdbcConnection.close();
             jdbcConnection = DriverManager.getConnection(TEST_DB_URL + ";shutdown=true");
-        } catch (SQLNonTransientConnectionException e) {
-            // Expected exception when database is destroyed
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Could not drop local Database");
