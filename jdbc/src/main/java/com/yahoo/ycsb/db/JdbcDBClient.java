@@ -259,7 +259,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     read.append(" WHERE ");
     read.append(PRIMARY_KEY);
     read.append(" = ");
-    read.append("?");
+    read.append("?;");
     PreparedStatement readStatement = getShardConnectionByKey(key).prepareStatement(read.toString());
     PreparedStatement stmt = cachedStatements.putIfAbsent(readType, readStatement);
     if (stmt == null) return readStatement;
@@ -272,7 +272,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     delete.append(deleteType.tableName);
     delete.append(" WHERE ");
     delete.append(PRIMARY_KEY);
-    delete.append(" = ?");
+    delete.append(" = ?;");
     PreparedStatement deleteStatement = getShardConnectionByKey(key).prepareStatement(delete.toString());
     PreparedStatement stmt = cachedStatements.putIfAbsent(deleteType, deleteStatement);
     if (stmt == null) return deleteStatement;
@@ -287,7 +287,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     for (int i = 0; i < updateType.numFields; i++) {
       update.append(COLUMN_PREFIX);
       update.append(i);
-      update.append("=?");
+      update.append("=?;");
       if (i < updateType.numFields - 1) update.append(", ");
     }
     update.append(" WHERE ");
