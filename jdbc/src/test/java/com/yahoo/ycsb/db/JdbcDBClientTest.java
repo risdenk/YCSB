@@ -11,16 +11,19 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by kruthar on 11/2/15.
  */
 public class JdbcDBClientTest {
-    private static final String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    private static final String DERBY_URL = "jdbc:derby:memory:ycsb";
+    private static final String TEST_DB_DRIVER = "org.hsqldb.jdbc.JDBCDriver";
+    private static final String TEST_DB_URL = "jdbc:hsqldb:mem:ycsb";
+    private static final String TEST_DB_USER = "sa";
     private static final String TABLE_NAME = "USERTABLE";
     private static final int FIELD_LENGTH = 32;
     private static final String FIELD_PREFIX = "FIELD";
+    private static final String KEY_PREFIX = "user";
     private static final String KEY_FIELD = "YCSB_KEY";
     private static final int NUM_FIELDS = 3;
 
@@ -30,24 +33,25 @@ public class JdbcDBClientTest {
     @BeforeClass
     public static void setup() {
         try {
-            Class driverClass = Class.forName(DERBY_DRIVER);
-            jdbcConnection = DriverManager.getConnection(DERBY_URL + ";create=true");
+            Class driverClass = Class.forName(TEST_DB_DRIVER);
+            jdbcConnection = DriverManager.getConnection(TEST_DB_URL);
 
             jdbcDBClient = new JdbcDBClient();
 
             Properties p = new Properties();
-            p.setProperty(JdbcDBClientConstants.CONNECTION_URL, DERBY_URL);
-            p.setProperty(JdbcDBClientConstants.DRIVER_CLASS, DERBY_DRIVER);
+            p.setProperty(JdbcDBClientConstants.CONNECTION_URL, TEST_DB_URL);
+            p.setProperty(JdbcDBClientConstants.DRIVER_CLASS, TEST_DB_DRIVER);
+            p.setProperty(JdbcDBClientConstants.CONNECTION_USER, TEST_DB_USER);
 
             jdbcDBClient.setProperties(p);
             jdbcDBClient.init();
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            fail("Could not find Derby Driver Class: org.apache.derby.jdbc.EmbeddedDriver");
+            fail("Could not find Driver Class: " + TEST_DB_DRIVER);
         } catch (SQLException e) {
             e.printStackTrace();
-            fail("Could not create local Derby Database");
+            fail("Could not create local Database");
         } catch (DBException e) {
             e.printStackTrace();
             fail("Could not create JdbcDBClient instance");
@@ -58,12 +62,12 @@ public class JdbcDBClientTest {
     public static void teardown() {
         try {
             jdbcConnection.close();
-            jdbcConnection = DriverManager.getConnection(DERBY_URL + ";drop=true");
+            jdbcConnection = DriverManager.getConnection(TEST_DB_URL + ";shutdown=true");
         } catch (SQLNonTransientConnectionException e) {
             // Expected exception when database is destroyed
         } catch (SQLException e) {
             e.printStackTrace();
-            fail("Could not drop local Derby Database");
+            fail("Could not drop local Database");
         }
     }
 
@@ -288,7 +292,33 @@ public class JdbcDBClientTest {
     }
 
     @Test
-    public void scanTest() {
-        assertTrue(true);
+    public void scanTest() throws SQLException {
+        HashMap<String, HashMap<String, ByteIterator>> keyMap = new HashMap<String, HashMap<String, ByteIterator>>();
+        for (int i = 0; i < 5; i++) {
+            String insertKey = KEY_PREFIX + i;
+            keyMap.put(insertKey, insertRow(insertKey));
+        }
+        HashSet<String> fieldSet = new HashSet<String>();
+        fieldSet.add("FIELD0");
+        fieldSet.add("FIELD1");
+        int startIndex = 1;
+        int resultRows = 3;
+
+        Vector<HashMap<String, ByteIterator>> resultVector = new Vector<HashMap<String, ByteIterator>>();
+        jdbcDBClient.scan(TABLE_NAME, KEY_PREFIX + startIndex, resultRows, fieldSet, resultVector);
+
+        // Check the resultVector is the correct size
+        assertEquals("Assert the correct number of results rows were returned", resultRows, resultVector.size());
+        // Check each vector row to make sure we have the correct fields
+        int testIndex = startIndex;
+        for (HashMap<String, ByteIterator> result: resultVector) {
+            assertEquals("Assert that this row has the correct number of fields", fieldSet.size(), result.size());
+            for (String field: fieldSet) {
+                // TODO: This will fail until the fix is made to insert and update fields in the correct order.
+                // TODO: Uncomment this assertEquals when the fix is made.
+                //assertEquals("Assert this field is correct in this row", keyMap.get(KEY_PREFIX + testIndex).get(field), result.get(field));
+            }
+            testIndex++;
+        }
     }
 }
