@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
  * Created by risdenk on 11/4/15.
  */
 public class MySQLJDBCClientTest extends JdbcDBClientTest {
-    private static final String TEST_DB_URL = "jdbc:mysql://127.0.0.1:3306/";
+    private static final String TEST_DB_URL = "jdbc:mysql://127.0.0.1:3306/ycsb";
     private static final String TEST_DB_USER = "root";
     private static final String TEST_DB_PASSWORD = "";
 
@@ -22,16 +22,11 @@ public class MySQLJDBCClientTest extends JdbcDBClientTest {
     public static void setup() {
         try {
             jdbcConnection = DriverManager.getConnection(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
-            try (Statement stmt = jdbcConnection.createStatement()) {
-                String sql = "CREATE DATABASE IF NOT EXISTS " + TEST_DB_NAME;
-                stmt.executeUpdate(sql);
-            }
-            jdbcConnection.setCatalog(TEST_DB_NAME);
 
             jdbcDBClient = new JdbcDBClient();
 
             Properties p = new Properties();
-            p.setProperty(JdbcDBClientConstants.CONNECTION_URL, TEST_DB_URL + TEST_DB_NAME);
+            p.setProperty(JdbcDBClientConstants.CONNECTION_URL, TEST_DB_URL);
             p.setProperty(JdbcDBClientConstants.CONNECTION_USER, TEST_DB_USER);
             p.setProperty(JdbcDBClientConstants.CONNECTION_PASSWD, TEST_DB_PASSWORD);
 
@@ -49,11 +44,6 @@ public class MySQLJDBCClientTest extends JdbcDBClientTest {
     @AfterClass
     public static void teardown() {
         try {
-            try (Statement stmt = jdbcConnection.createStatement()) {
-                String sql = "DROP DATABASE IF EXISTS " + TEST_DB_NAME;
-                stmt.executeUpdate(sql);
-            }
-
             if (jdbcConnection != null) {
                 jdbcConnection.close();
             }

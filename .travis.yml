@@ -22,6 +22,9 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk7  
+
+before_install:
+  - mysql -e "create database IF NOT EXISTS ycsb;" -uroot
   
 install: mvn install -q -DskipTests=true
 
