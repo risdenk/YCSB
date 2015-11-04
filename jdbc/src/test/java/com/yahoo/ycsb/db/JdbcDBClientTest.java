@@ -222,8 +222,6 @@ public class JdbcDBClientTest {
             e.printStackTrace();
             fail("Failed updateTest");
         }
-
-        assertTrue(true);
     }
 
     @Test
