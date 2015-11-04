@@ -232,7 +232,7 @@ public class JdbcDBClientTest {
         HashSet<String> readFields = new HashSet<String>();
         HashMap<String, ByteIterator> readResultMap = new HashMap<String, ByteIterator>();
 
-        // Test reading a single
+        // Test reading a single field
         readFields.add("FIELD0");
         jdbcDBClient.read(TABLE_NAME, insertKey, readFields, readResultMap);
         assertEquals("Assert that result has correct number of fields", readFields.size(), readResultMap.size());
@@ -258,7 +258,33 @@ public class JdbcDBClientTest {
 
     @Test
     public void deleteTest() {
-        assertTrue(true);
+        try {
+            String insertBeforeKey = "user0";
+            HashMap<String, ByteIterator> insertBeforeMap = insertRow(insertBeforeKey);
+            String deleteKey = "user1";
+            insertRow(deleteKey);
+            String insertAfterKey = "user2";
+            HashMap<String, ByteIterator> insertAfterMap = insertRow(insertAfterKey);
+
+            jdbcDBClient.delete(TABLE_NAME, deleteKey);
+
+            ResultSet resultSet = jdbcConnection.prepareStatement(
+                String.format("SELECT * FROM %s", TABLE_NAME)
+            ).executeQuery();
+
+            int totalRows = 0;
+            while (resultSet.next()) {
+                assertNotEquals("Assert this is not the deleted row key", deleteKey, resultSet.getString(KEY_FIELD));
+                totalRows++;
+            }
+            // Check we do not have a result Row
+            assertEquals("Assert we ended with the correct number of rows", totalRows, 2);
+
+            resultSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            fail("Failed deleteTest");
+        }
     }
 
     @Test
