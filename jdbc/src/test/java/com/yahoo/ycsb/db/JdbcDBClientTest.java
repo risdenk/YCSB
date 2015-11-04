@@ -17,18 +17,19 @@ import java.util.Vector;
  * Created by kruthar on 11/2/15.
  */
 public class JdbcDBClientTest {
-    private static final String TEST_DB_DRIVER = "org.hsqldb.jdbc.JDBCDriver";
-    private static final String TEST_DB_URL = "jdbc:hsqldb:mem:ycsb";
-    private static final String TEST_DB_USER = "sa";
-    private static final String TABLE_NAME = "USERTABLE";
-    private static final int FIELD_LENGTH = 32;
-    private static final String FIELD_PREFIX = "FIELD";
-    private static final String KEY_PREFIX = "user";
-    private static final String KEY_FIELD = "YCSB_KEY";
-    private static final int NUM_FIELDS = 3;
+    protected static final String TEST_DB_NAME = "ycsb";
+    protected static final String TEST_DB_DRIVER = "org.hsqldb.jdbc.JDBCDriver";
+    protected static final String TEST_DB_URL = "jdbc:hsqldb:mem:" + TEST_DB_NAME;
+    protected static final String TEST_DB_USER = "sa";
+    protected static final String TABLE_NAME = "USERTABLE";
+    protected static final int FIELD_LENGTH = 32;
+    protected static final String FIELD_PREFIX = "FIELD";
+    protected static final String KEY_PREFIX = "user";
+    protected static final String KEY_FIELD = "YCSB_KEY";
+    protected static final int NUM_FIELDS = 3;
 
-    private static Connection jdbcConnection = null;
-    private static JdbcDBClient jdbcDBClient = null;
+    protected static Connection jdbcConnection = null;
+    protected static JdbcDBClient jdbcDBClient = null;
 
     @BeforeClass
     public static void setup() {

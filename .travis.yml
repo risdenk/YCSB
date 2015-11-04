@@ -30,7 +30,7 @@ script: mvn test -q
 # Services to start for tests.
 services:
   - mongodb
-
+  - mysql
 
 # Use the Container based infrastructure.
 sudo: false
