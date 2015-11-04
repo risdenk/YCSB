@@ -5,10 +5,17 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.sql.*;
 import java.util.Properties;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNoException;
 
 /**
  * Created by risdenk on 11/4/15.
@@ -17,9 +24,30 @@ public class MySQLJDBCClientTest extends JdbcDBClientTest {
     private static final String TEST_DB_URL = "jdbc:mysql://127.0.0.1:3306/ycsb";
     private static final String TEST_DB_USER = "root";
     private static final String TEST_DB_PASSWORD = "";
+    private static final int MYSQL_DEFAULT_PORT = 3306;
 
     @BeforeClass
     public static void setup() {
+        // Test if we can connect.
+        Socket socket = null;
+        try {
+            // Connect
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(InetAddress.getLocalHost(), MYSQL_DEFAULT_PORT), 100);
+            assertThat("Socket is not bound.", socket.getLocalPort(), not(-1));
+        } catch (IOException connectFailed) {
+            assumeNoException("MySQL is not running. Skipping tests.", connectFailed);
+        } finally {
+            if (socket != null) {
+                try {
+                    socket.close();
+                } catch (IOException ignore) {
+                    // Ignore.
+                }
+            }
+            socket = null;
+        }
+
         try {
             jdbcConnection = DriverManager.getConnection(TEST_DB_URL, TEST_DB_USER, TEST_DB_PASSWORD);
 
