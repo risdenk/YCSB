@@ -245,7 +245,7 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     for (int i = 0; i < insertType.numFields; i++) {
       insert.append(",?");
     }
-    insert.append(")");
+    insert.append(");");
     PreparedStatement insertStatement = getShardConnectionByKey(key).prepareStatement(insert.toString());
     PreparedStatement stmt = cachedStatements.putIfAbsent(insertType, insertStatement);
     if (stmt == null) return insertStatement;
@@ -287,12 +287,12 @@ public class JdbcDBClient extends DB implements JdbcDBClientConstants {
     for (int i = 0; i < updateType.numFields; i++) {
       update.append(COLUMN_PREFIX);
       update.append(i);
-      update.append("=?;");
+      update.append("=?");
       if (i < updateType.numFields - 1) update.append(", ");
     }
     update.append(" WHERE ");
     update.append(PRIMARY_KEY);
-    update.append(" = ?");
+    update.append(" = ?;");
     PreparedStatement insertStatement = getShardConnectionByKey(key).prepareStatement(update.toString());
     PreparedStatement stmt = cachedStatements.putIfAbsent(updateType, insertStatement);
     if (stmt == null) return insertStatement;
