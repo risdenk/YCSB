@@ -91,7 +91,6 @@ public class JdbcDBClientTest {
             e.printStackTrace();
             fail("Failed to prepare test");
         }
-
     }
 
     /*
@@ -218,7 +217,6 @@ public class JdbcDBClientTest {
             fail("Failed updateTest");
         }
 
-
         assertTrue(true);
     }
 
@@ -256,12 +254,10 @@ public class JdbcDBClientTest {
     @Test
     public void deleteTest() {
         try {
-            String insertBeforeKey = "user0";
-            HashMap<String, ByteIterator> insertBeforeMap = insertRow(insertBeforeKey);
+            insertRow("user0");
             String deleteKey = "user1";
             insertRow(deleteKey);
-            String insertAfterKey = "user2";
-            HashMap<String, ByteIterator> insertAfterMap = insertRow(insertAfterKey);
+            insertRow("user2");
 
             jdbcDBClient.delete(TABLE_NAME, deleteKey);
 
