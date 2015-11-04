@@ -33,7 +33,6 @@ public class JdbcDBClientTest {
     @BeforeClass
     public static void setup() {
         try {
-            Class driverClass = Class.forName(TEST_DB_DRIVER);
             jdbcConnection = DriverManager.getConnection(TEST_DB_URL);
 
             jdbcDBClient = new JdbcDBClient();
@@ -45,10 +44,6 @@ public class JdbcDBClientTest {
 
             jdbcDBClient.setProperties(p);
             jdbcDBClient.init();
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            fail("Could not find Driver Class: " + TEST_DB_DRIVER);
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Could not create local Database");
