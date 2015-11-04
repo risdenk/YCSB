@@ -34,7 +34,6 @@ public class JdbcDBClientTest {
     public static void setup() {
         try {
             jdbcConnection = DriverManager.getConnection(TEST_DB_URL);
-
             jdbcDBClient = new JdbcDBClient();
 
             Properties p = new Properties();
@@ -56,8 +55,9 @@ public class JdbcDBClientTest {
     @AfterClass
     public static void teardown() {
         try {
-            jdbcConnection.close();
-            jdbcConnection = DriverManager.getConnection(TEST_DB_URL + ";shutdown=true");
+            if (jdbcConnection != null) {
+                jdbcConnection.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             fail("Could not drop local Database");
