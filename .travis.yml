@@ -35,7 +35,7 @@ script: mvn test -q
 services:
   - mongodb
   - mysql
-  - postgres
+  - postgresql
 
 # Use the Container based infrastructure.
 sudo: false
