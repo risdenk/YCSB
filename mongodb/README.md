@@ -104,9 +104,7 @@ bin/ycsb run mongodb -jvm-args="-Dlogback.configurationFile=/path/to/logback.xml
 - `mongodb.url`
   - This should be a MongoDB URI or connection string. 
     - See http://docs.mongodb.org/manual/reference/connection-string/ for the standard options.
-    - For the complete set of options for the asynchronous driver see: 
-      - http://www.allanbank.com/mongodb-async-driver/apidocs/index.html?com/allanbank/mongodb/MongoDbUri.html
-    - For the complete set of options for the synchronous driver see:
+    - For the complete set of options for the driver see:
       - http://api.mongodb.org/java/current/index.html?com/mongodb/MongoClientURI.html
   - Default value is `mongodb://localhost:27017/ycsb?w=1`
   - Default value of database is `ycsb`

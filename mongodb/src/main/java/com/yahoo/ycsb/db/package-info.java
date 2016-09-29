@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Yahoo!, Inc. All rights reserved.
+ * Copyright (c) 2014 Yahoo! Inc., 2016 YCSB contributors. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You
@@ -22,9 +22,7 @@
  * href="https://github.com/brianfrankcooper/YCSB/blob/master/mongodb/README.md"
  * >README.md</a>.
  * <p>
- * A YCSB binding is provided for both the the
- * <a href="http://www.allanbank.com/mongodb-async-driver/">Asynchronous
- * Java Driver</a> and the MongoDB Inc.
+ * A YCSB binding is provided for the MongoDB Inc.
  * <a href="http://docs.mongodb.org/ecosystem/drivers/java/">driver</a>.
  * </p>
  */

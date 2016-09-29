@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Yahoo!, Inc. All rights reserved.
+ * Copyright (c) 2014 Yahoo! Inc., 2016 YCSB contributors. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You
@@ -16,28 +16,10 @@
  */
 package com.yahoo.ycsb.db;
 
-import static com.allanbank.mongodb.builder.QueryBuilder.where;
-
-import com.allanbank.mongodb.Durability;
-import com.allanbank.mongodb.LockType;
-import com.allanbank.mongodb.MongoClient;
-import com.allanbank.mongodb.MongoClientConfiguration;
-import com.allanbank.mongodb.MongoCollection;
-import com.allanbank.mongodb.MongoDatabase;
-import com.allanbank.mongodb.MongoDbUri;
-import com.allanbank.mongodb.MongoFactory;
-import com.allanbank.mongodb.MongoIterator;
-import com.allanbank.mongodb.ReadPreference;
-import com.allanbank.mongodb.bson.Document;
-import com.allanbank.mongodb.bson.Element;
-import com.allanbank.mongodb.bson.ElementType;
-import com.allanbank.mongodb.bson.builder.BuilderFactory;
-import com.allanbank.mongodb.bson.builder.DocumentBuilder;
-import com.allanbank.mongodb.bson.element.BinaryElement;
-import com.allanbank.mongodb.builder.BatchedWrite;
-import com.allanbank.mongodb.builder.BatchedWriteMode;
-import com.allanbank.mongodb.builder.Find;
-import com.allanbank.mongodb.builder.Sort;
+import com.mongodb.ReadPreference;
+import com.mongodb.async.client.MongoClient;
+import com.mongodb.async.client.MongoCollection;
+import com.mongodb.async.client.MongoDatabase;
 import com.yahoo.ycsb.ByteIterator;
 import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
@@ -53,15 +35,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * MongoDB asynchronous client for YCSB framework using the <a
- * href="http://www.allanbank.com/mongodb-async-driver/">Asynchronous Java
+ * href="https://docs.mongodb.com/ecosystem/drivers/java/">Asynchronous Java
  * Driver</a>
  * <p>
  * See the <code>README.md</code> for configuration information.
  * </p>
- *
- * @author rjm
- * @see <a href="http://www.allanbank.com/mongodb-async-driver/">Asynchronous
- *      Java Driver</a>
  */
 public class AsyncMongoDbClient extends DB {
 
