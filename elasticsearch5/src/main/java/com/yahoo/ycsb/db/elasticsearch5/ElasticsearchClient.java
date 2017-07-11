@@ -86,16 +86,14 @@ public class ElasticsearchClient extends DB {
     int numberOfReplicas = parseIntegerProperty(props, "es.number_of_replicas", NUMBER_OF_REPLICAS);
 
     Boolean newdb = Boolean.parseBoolean(props.getProperty("es.newdb", "false"));
-    Builder settings = Settings.builder()
-        .put("cluster.name", DEFAULT_CLUSTER_NAME)
-        .put("path.home", pathHome);
+    Builder settings = Settings.builder();
 
     // if properties file contains elasticsearch user defined properties
     // add it to the settings file (will overwrite the defaults).
-    settings.put(props);
-    final String clusterName = settings.get("cluster.name");
+    
+    final String clusterName = props.getProperty("cluster.name", DEFAULT_CLUSTER_NAME);
     System.err.println("Elasticsearch starting node = " + clusterName);
-    System.err.println("Elasticsearch node path.home = " + settings.get("path.home"));
+    System.err.println("Elasticsearch node path.home = " + pathHome);
     System.err.println("Elasticsearch Remote Mode = " + remoteMode);
     // Remote mode support for connecting to remote elasticsearch cluster
     if(remoteMode) {
@@ -106,7 +104,8 @@ public class ElasticsearchClient extends DB {
       settings.put("client.transport.sniff", true)
           .put("client.transport.ignore_cluster_name", false)
           .put("client.transport.ping_timeout", "30s")
-          .put("client.transport.nodes_sampler_interval", "30s");
+          .put("client.transport.nodes_sampler_interval", "30s")
+          .put("cluster.name", clusterName);
       // Default it to localhost:9300
       String[] nodeList = props.getProperty("es.hosts.list", DEFAULT_REMOTE_HOST).split(",");
       System.out.println("Elasticsearch Remote Hosts = " + props.getProperty("es.hosts.list", DEFAULT_REMOTE_HOST));
@@ -126,6 +125,7 @@ public class ElasticsearchClient extends DB {
       }
       client = tClient;
     } else { // Start node only if transport client mode is disabled
+      settings.put(props);
       settings.put("transport.type", "local");
       settings.put("http.enabled", "false");
       node = new Node(settings.build());
