@@ -23,6 +23,8 @@ import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.QueryBuilders.*;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClient;
@@ -269,6 +271,30 @@ public class ElasticsearchClient extends DB {
       int recordcount,
       Set<String> fields,
       Vector<HashMap<String, ByteIterator>> result) {
-    return Status.NOT_IMPLEMENTED;
+    try{
+      final QueryBuilder rangeQuery = rangeQuery("_id").gte(startkey);
+      final SearchResponse response = client.prepareSearch(indexKey)
+          .setTypes(table)
+          .setQuery(rangeQuery)
+          .setSize(recordcount)
+          .execute()
+          .actionGet();
+
+      HashMap<String, ByteIterator> entry;
+
+      for (SearchHit hit : response.getHits()) {
+        entry = new HashMap<>(fields.size());
+        for (String field : fields) {
+	  entry.put(field, new StringByteIterator((String) hit.getSource().get(field)));
+        }
+        result.add(entry);
+      }
+
+      return Status.OK;
+
+    } catch (Exception e) {
+	e.printStackTrace();
+        return Status.ERROR;
+    }
   }
 }
