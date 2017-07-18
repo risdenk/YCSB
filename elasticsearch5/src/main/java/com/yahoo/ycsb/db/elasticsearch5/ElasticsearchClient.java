@@ -24,7 +24,6 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.QueryBuilders.*;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClient;
@@ -32,10 +31,12 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.search.SearchHit;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -272,10 +273,12 @@ public class ElasticsearchClient extends DB {
       Set<String> fields,
       Vector<HashMap<String, ByteIterator>> result) {
     try{
-      final QueryBuilder rangeQuery = rangeQuery("_id").gte(startkey);
       final SearchResponse response = client.prepareSearch(indexKey)
           .setTypes(table)
-          .setQuery(rangeQuery)
+          .setQuery(QueryBuilders.matchQuery(
+            "_id", startkey + ' '
+            + startkey.substring(0, Math.min(5, startkey.length()))
+          ))
           .setSize(recordcount)
           .execute()
           .actionGet();
@@ -285,7 +288,7 @@ public class ElasticsearchClient extends DB {
       for (SearchHit hit : response.getHits()) {
         entry = new HashMap<>(fields.size());
         for (String field : fields) {
-	  entry.put(field, new StringByteIterator((String) hit.getSource().get(field)));
+          entry.put(field, new StringByteIterator((String) hit.getSource().get(field)));
         }
         result.add(entry);
       }
@@ -293,8 +296,8 @@ public class ElasticsearchClient extends DB {
       return Status.OK;
 
     } catch (Exception e) {
-	e.printStackTrace();
-        return Status.ERROR;
+      e.printStackTrace();
+      return Status.ERROR;
     }
   }
 }

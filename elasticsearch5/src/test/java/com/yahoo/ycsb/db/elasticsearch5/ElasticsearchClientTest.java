@@ -141,6 +141,6 @@ public class ElasticsearchClientTest {
         Set<String> fields = MOCK_DATA.keySet();
         Vector<HashMap<String, ByteIterator>> resultParam = new Vector<>(10);
         Status result = instance.scan(MOCK_TABLE, MOCK_KEY1, recordcount, fields, resultParam);
-        assertEquals(Status.NOT_IMPLEMENTED, result);
+        assertEquals(Status.OK, result);
     }
 }
