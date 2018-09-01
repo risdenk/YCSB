@@ -62,7 +62,7 @@ LICENSE file.
 
   <!-- Properties Management -->
   <properties>
-    <maven.assembly.version>2.5.5</maven.assembly.version>
+    <maven.assembly.version>3.1.0</maven.assembly.version>
     <maven.dependency.version>2.10</maven.dependency.version>
 
     <!-- datastore binding versions, lex sorted -->
