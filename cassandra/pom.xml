@@ -72,7 +72,7 @@ LICENSE file.
 	  <dependency>
 	    <groupId>org.hyperic</groupId>
 	    <artifactId>sigar-dist</artifactId>
-	    <version>1.6.4.129</version>
+	    <version>1.6.5.132-6</version>
 	    <type>zip</type>
 	    <scope>test</scope>
 	  </dependency>
