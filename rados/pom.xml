@@ -62,6 +62,6 @@ LICENSE file.
 
   <properties>
   	<rados.version>0.2.0</rados.version>
-  	<json.version>20160212</json.version>
+  	<json.version>20180813</json.version>
   </properties>
 </project>
