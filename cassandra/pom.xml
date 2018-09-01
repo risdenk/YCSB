@@ -52,7 +52,7 @@ LICENSE file.
     <dependency>
       <groupId>org.cassandraunit</groupId>
       <artifactId>cassandra-unit</artifactId>
-      <version>3.0.0.1</version>
+      <version>3.5.0.1</version>
       <classifier>shaded</classifier>
       <scope>test</scope>
     </dependency>
